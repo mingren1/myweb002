@@ -1,0 +1,10 @@
+sql 多字段去重：
+	DELETE FROM course WHERE (NAME,teacher) IN (
+			SELECT t.NAME,t.teacher FROM (
+				SELECT NAME,teacher FROM course GROUP BY NAME,teacher HAVING COUNT(NAME) > 1 AND COUNT(teacher) > 1
+			) t
+		) AND
+		ID NOT IN (
+			SELECT tt.id FROM
+			(SELECT MIN(ID) id FROM course GROUP BY NAME,teacher HAVING COUNT(NAME) > 1 AND COUNT(teacher) > 1) tt
+		);
